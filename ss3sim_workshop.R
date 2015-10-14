@@ -16,7 +16,7 @@
 
 ## Set your working directory to be in the same folder as this script
 getwd()
-setwd()
+setwd(dir=  )
 
 ## Load the neccessary libraries
 library(ss3sim)
@@ -26,8 +26,8 @@ library(foreach)
 library(ggplot2)
 
 ## Setup parallel cores and iterations to run
-registerDoParallel()
-Nsim <- 1*getDoParWorkers()             # sample sizes for runs
+cores <- 2
+Nsim <- 1*cores                         # sample sizes for runs
 
 ## Some checks before proceeding
 packageVersion("ss3sim")                # should be 0.8.9.9000
@@ -54,8 +54,8 @@ run_ss3sim(iterations=1,                # vector of iterations to run
            case_files=case_files,       # linking case files to cases
            om_dir=om, em_dir=em)        # where to find models to use
 
-## <Look at the folder structure that was created.> We can also use r4ss to
-## make standard plots.
+## <Look at the folder structure that was created.>
+## We can also use r4ss to ## make standard plots.
 out <- SS_output('D0-F1-cod/1/em', forecast=FALSE, covar=FALSE,
                  NoCompOK=TRUE, ncols=250, printstats=FALSE, verbose=FALSE)
 SS_plots(replist=out, png=TRUE, uncertainty=FALSE, html=FALSE, verbose=FALSE)
@@ -121,10 +121,11 @@ sample_agecomp(dat_list=dat, outfile='sampled.dat',
                Nsamp=ageargs$Nsamp,
                years=ageargs$years,
                cpar=ageargs$cpar)
-## <Look at differences in text editor>. These arguments are passed to this
-## function **during** the simulation at the appropriate step (in this case
-## after the OM runs but before the EM). In general this is how ss3sim
-## works. We currently have three case files associated with 'D0'.
+## <Look at differences in text editor>.
+## These arguments are passed to this function **during** the simulation at
+## the appropriate step (in this case after the OM runs but before the
+## EM). In general this is how ss3sim works. We currently have three case
+## files associated with 'D0'.
 
 ## =====  EXERCISE: CREATE A NEW CASE 'D1' THAT HAS LESS DATA =====.
 
