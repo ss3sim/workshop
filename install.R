@@ -1,3 +1,7 @@
+## Check that a new enough R version is being used. R>= 3.2
+if(version$major != "3" | as.numeric(version$minor) < 2)
+  stop('R version needs to be > 3.2')
+
 ## Install the package and any dependencies from github
 install.packages('devtools')
 library(devtools)

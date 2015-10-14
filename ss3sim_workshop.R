@@ -19,6 +19,7 @@ if (!file.exists("install.R")) {
   dir <- choose.dir()
   setwd(dir)
 }
+getwd()
 
 ## Load the neccessary libraries
 library(ss3sim)
@@ -35,8 +36,10 @@ registerDoParallel(cores)
 ## Some checks before proceeding
 packageVersion("ss3sim")                # should be 0.8.9.9000
 packageVersion("r4ss")                  # should be 1.23.5
-version$version.string                  # should be > 3.2
 Sys.info()[5]                           # machine needs to be 64bit
+## Check that a new enough R version is being used. R>= 3.2
+if(version$major != "3" | as.numeric(version$minor) < 2)
+  stop('R version needs to be > 3.2')
 
 ### End of [Step 0]
 ### ------------------------------------------------------------
