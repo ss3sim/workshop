@@ -1,0 +1,8 @@
+natM_val;c(NA,-1)
+natM_type;1parm
+natM_n_breakpoints; NULL
+natM_lorenzen;NULL
+par_name;c('L_at_Amin_Fem_GP_1','L_at_Amax_Fem_GP_1','VonBert_K_Fem_GP_1','CV_young_Fem_GP_1','CV_old_Fem_GP_1','SR_BH_steep')
+par_int;c(NA,NA,NA,NA,NA,NA)
+par_phase;c(-1,-1,-1,-1,-1,5)
+forecast_num;1
