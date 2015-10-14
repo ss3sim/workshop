@@ -5,8 +5,8 @@ if(version$major != "3" | as.numeric(version$minor) < 2)
 ## Install the package and any dependencies from github
 install.packages('devtools')
 library(devtools)
-install_github('ss3sim/ss3sim', dependencies = TRUE)
 install_github('r4ss/r4ss')
+install_github('ss3sim/ss3sim', dependencies = TRUE)
 
 ## Make sure you can load all of these, if not the install them manually
 ## with install.packages()
