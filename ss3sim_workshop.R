@@ -29,7 +29,6 @@ library(ggplot2)
 Sys.getenv("NUMBER_OF_PROCESSORS")
 cores <- 2                              # cores for parallel
 registerDoParallel(cores)
-Nsim <- 1*cores                         # sample sizes for runs
 
 ## Some checks before proceeding
 packageVersion("ss3sim")                # should be 0.8.9.9000
@@ -65,7 +64,7 @@ SS_plots(replist=out, png=TRUE, uncertainty=FALSE, html=FALSE, verbose=FALSE)
 ## Now rerun with more replicates, in parallel (within scenario) this
 ## time. We recommend using serial execution during development since error
 ## messages in parallel can be more difficult to interpret.
-run_ss3sim(iterations=2:Nsim, scenarios='D0-F1-cod', case_folder='cases',
+run_ss3sim(iterations=2:(cores+1), scenarios='D0-F1-cod', case_folder='cases',
            case_files=case_files, om_dir=om, em_dir=em,
            parallel=TRUE, parallel_iterations=TRUE)
 
