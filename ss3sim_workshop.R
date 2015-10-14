@@ -15,11 +15,8 @@
 ### [Step 0] Startup the working environment
 
 ## Set your working directory to be in the same folder as this script
-if (!file.exists("install.R")) {
-  dir <- choose.dir()
-  setwd(dir)
-}
 getwd()
+setwd(dir= )
 
 ## Load the neccessary libraries
 library(ss3sim)

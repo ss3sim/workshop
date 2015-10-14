@@ -17,10 +17,8 @@ library(foreach)
 library(ggplot2)
 
 ## Set your working directory to be in the same folder as this script
-if (!file.exists("install.R")) {
-  dir <- choose.dir()
-  setwd(dir)
-}
+getwd()
+setwd(dir= )
 
 ## Run a simple model to see if the package is installed and working
 ## correctly. Don't worry about what this means, we'll cover that in the
