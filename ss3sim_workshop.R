@@ -147,7 +147,7 @@ caseargs$index
 
 ## Now we run the new scenario, replacing D0 with D1 so it looks for our
 ## new files and uses those arguments in the sampling functions.
-run_ss3sim(iterations=1:Nsim, scenarios='D1-F1-cod', case_folder='cases',
+run_ss3sim(iterations=1:cores, scenarios='D1-F1-cod', case_folder='cases',
            case_files=case_files, om_dir=om, em_dir=em,
            parallel=TRUE, parallel_iterations=TRUE)
 ## We want to compare D0 and D1, so read them both in to combine
@@ -196,11 +196,9 @@ E.df
 ## We will use it to add a trend to a selex parameter
 selex.scalar.vec <- c(0,20)
 S.cases <- seq_along(selex.scalar.vec)
-S.df <- data.frame(selex.scalar=factor(paste0('selex.scalar=',selex.scalar.vec),
-                   levels=paste0('selex.scalar=',selex.scalar.vec)),
-                   S=paste0('S', S.cases))
 S.df <- data.frame(selex=factor(c("No Process Error", "Process Error")),
                    S=paste0('S', S.cases))
+S.df
 ## <look at S0 and S1>
 
 ## The sampling functions have an optional argument for the effective
@@ -213,12 +211,13 @@ D.df
 ## <look at lcomp11-cod.txt>
 
 ## The case files are in the 'extra_cases' folder and ready to go. Notice
-## that we've added a new letter S to our case files. The package will now
+## that we've added new letters 'S' and 'E' to our case files. The package will now
 ## look for files named "S" to match up to our S cases (S0 and S1).
 case_folder <- 'cases/extra_cases'
 case_files <- list(F="F", D=c("index","lcomp","agecomp"), S='S', E='E')
 scenarios <- expand_scenarios(cases=list(D=D.cases, F=1, S=S.cases, E=E.cases),
                      species='cod')
+scenarios
 ## run_ss3sim(iterations=1:50, scenarios=scenarios, parallel=TRUE,
 ##            parallel_iterations=TRUE, case_folder=case_folder, om_dir=om,
 ##            em_dir=em, case_files=case_files)
@@ -234,11 +233,13 @@ g <- ggplot(results_sc_3, aes(ess.ratio, SSB_MSY_re, group=replicate))+
     geom_line(alpha=.5) + facet_grid(estimated~selex.scalar) +
     geom_vline(xintercept=1, col='blue') +
     geom_hline(yintercept=0, col='red') + myylim+ theme_bw()
+g
 ggsave('plots/SSB_MSY_re.png', g, width=9, height=6)
 g <- ggplot(results_sc_3, aes(ess.ratio, depletion_re, group=replicate))+
     geom_line(alpha=.5) + facet_grid(estimated~selex.scalar) +
     geom_vline(xintercept=1, col='blue') +
     geom_hline(yintercept=0, col='red') + myylim+ theme_bw()
+g
 ggsave('plots/depletion_re.png', g, width=9, height=6)
 ### [End of step 3]
 ### ------------------------------------------------------------
