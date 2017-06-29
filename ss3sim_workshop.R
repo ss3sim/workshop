@@ -31,8 +31,8 @@ cores <- 2                              # cores for parallel
 registerDoParallel(cores)
 
 ## Some checks before proceeding
-packageVersion("ss3sim")                # should be 0.8.9.9000
-packageVersion("r4ss")                  # should be 1.23.5
+packageVersion("ss3sim")                # should be 0.9.5
+packageVersion("r4ss")                  # should be 1.27.0
 Sys.info()[5]                           # machine needs to be 64bit
 ## Check that a new enough R version is being used. R>= 3.2
 if(version$major != "3" | as.numeric(version$minor) < 2)
