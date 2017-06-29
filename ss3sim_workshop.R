@@ -5,7 +5,8 @@
 ###
 ### Anderson, S.C., C.C. Monnahan, K.F. Johnson, K. Ono, and
 ### J.L. Valero. 2014. ss3sim: An R Package for Fisheries Stock Assessment
-### Simulation with Stock Synthesis. Plos One 9:e92725.
+### Simulation with Stock Synthesis. PlOS ONE 9:e92725.
+### https://doi.org/10.1371/journal.pone.0092725
 ###
 ### File developed for the CAPAM workshop on data weighting, likelihoods,
 ### and process error. Cole Monnahan | monnahc@uw.edu.
@@ -31,12 +32,12 @@ cores <- 2                              # cores for parallel
 registerDoParallel(cores)
 
 ## Some checks before proceeding
-packageVersion("ss3sim")                # should be 0.9.5
+packageVersion("ss3sim")                # should be 0.9.5.9000 (GitHub) or 0.9.6 (CRAN)
 packageVersion("r4ss")                  # should be 1.27.0
 Sys.info()[5]                           # machine needs to be 64bit
-## Check that a new enough R version is being used. R>= 3.2
-if(version$major != "3" | as.numeric(version$minor) < 2)
-  stop('R version needs to be > 3.2')
+## Check that a new enough R version is being used. R>= 3.3
+if(version$major != "3" | as.numeric(version$minor) < 3)
+  stop('R version needs to be > 3.3')
 
 ### End of [Step 0]
 ### ------------------------------------------------------------
