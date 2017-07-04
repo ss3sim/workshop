@@ -42,56 +42,113 @@ if(version$major != "3" | as.numeric(version$minor) < 3)
 ### ------------------------------------------------------------
 
 ### ------------------------------------------------------------
-### [Step 1] Run a very simple example to demonstrate syntax and output
-### structure and results. This is our 'cod' model and a data rich case.
-##
-## Tell package how to link case files with internal functions (more on
-## this later). F refers to the effort trajectory and D refers to the data
-## used.
-case_files <- list(F='F', D=c('index','lcomp','agecomp'))
-## Path to the folders containing the models. <Stop and look at these>
-om <- 'model/om/'; em <- 'model/em/'
-run_ss3sim(iterations=1,                # vector of iterations to run
-           scenarios='D0-F1-cod',       # vector of scenarios
-           case_folder='cases',         # folder containing case files
-           case_files=case_files,       # linking case files to cases
-           om_dir=om, em_dir=em)        # where to find models to use
+### [Step 1]
+### Run a simple example of a scenario to demonstrate input syntax,
+### output structure, and results.
+### This is our 'cod' model with data-rich sampling history and
+### a two-way trip fishing history.
+### A full simulation for research purposes would have multiple scenarios.
+
+## Tell ss3sim the specifications for the
+## * operating model (OM),
+## * sampling,
+## * estimation model (EM).
+## Case files (.txt files stored in a directory, here labeled 'cases')
+## tell ss3sim what to do.
+## Case files are linked with internal ss3sim functions.
+## F == effort trajectory
+## D == sampling protocol of index of abundance (index),
+## length-composition data (lcomp), and age-composition data (agecomp).
+## <Look at input folder structure.>
+run_ss3sim(
+  iterations=1,                # vector of iterations to run
+  scenarios='D0-F1-cod',       # vector of scenarios
+  case_folder='cases',         # folder containing case files
+  case_files=list(             # linking case files to cases
+    F='F',
+    D=c('index','lcomp','agecomp')),
+  om_dir='model/om/',          # location of the OM ss3 files
+  em_dir='model/em/')          # location of the EM ss3 files
+## Should see "Completed iterations: 1 for scenarios: D0-F1-cod" on console.
 
 ## <Look at the folder structure that was created.>
 ## We can also use r4ss to ## make standard plots.
-out <- SS_output('D0-F1-cod/1/em', forecast=FALSE, covar=FALSE,
-                 NoCompOK=TRUE, ncols=250, printstats=FALSE, verbose=FALSE)
-SS_plots(replist=out, png=TRUE, uncertainty=FALSE, html=FALSE, verbose=FALSE)
+## Plot the OM
+r4ss::SS_plots(
+  replist=r4ss::SS_output(
+    'D0-F1-cod/1/om',          # Specify the OM folder
+    forecast=FALSE, covar=FALSE,
+    NoCompOK=TRUE, ncols=250, printstats=FALSE, verbose=FALSE),
+  png=TRUE, uncertainty=FALSE, html=FALSE, verbose=FALSE)
+## Plot the EM
+r4ss::SS_plots(
+  replist=r4ss::SS_output(
+    'D0-F1-cod/1/em',          # Specify the EM folder
+    forecast=FALSE, covar=FALSE,
+    NoCompOK=TRUE, ncols=250, printstats=FALSE, verbose=FALSE),
+  png=TRUE, uncertainty=FALSE, html=FALSE, verbose=FALSE)
+dev.off()
+## <Navigate to "D0-F1-cod/1/om/plots/catch9 harvest rate">
+## <Navigate to "D0-F1-cod/1/em/plots/catch9 harvest rate">
 
 ## Now rerun with more replicates, in parallel (within scenario) this
 ## time. We recommend using serial execution during development since error
 ## messages in parallel can be more difficult to interpret.
-run_ss3sim(iterations=2:(cores+1), scenarios='D0-F1-cod', case_folder='cases',
-           case_files=case_files, om_dir=om, em_dir=em,
-           parallel=TRUE, parallel_iterations=TRUE)
+## Specify arguments that will be recycled.
+case_files <- list(F='F', D=c('index','lcomp','agecomp'))
+om <- 'model/om/'; em <- 'model/em/'
 
-## Read in results of the runs. This function uses r4ss to read in and then
-## write a csv for each scenario.
-get_results_all(user='D0-F1-cod') ## <look at csv files>
-results_sc_1 <- read.csv('ss3sim_scalar.csv')
-results_ts_1 <- read.csv('ss3sim_ts.csv')
-## Write and read in results (in case of failure or too slow)
-## write.csv(results_sc_1, file='results/results_sc_1.csv')
-## write.csv(results_ts_1, file='results/results_ts_1.csv')
-## results_sc_1 <- read.csv('results/results_sc_1.csv')
-## results_ts_1 <- read.csv('results/results_ts_1.csv')
+run_ss3sim(
+  iterations=2:4,              # Run iteration 2, 3, and 4 in parallel
+  scenarios='D0-F1-cod',       # Same scenario as last time
+  case_folder='cases',
+  case_files=case_files,
+  om_dir=om,
+  em_dir=em,
+  parallel=TRUE,               # Tells ss3sim to run things in parallel
+  parallel_iterations=TRUE)    # Specifies iterations or scenarios
+## Should see "Running iterations in parallel ..."
+
+## Read in results of the runs.
+## Use 'get_results_all', which uses r4ss to read in Report.sso files and
+## write two .csv files for each scenario (stored in the scenario folders)
+## and two .csv files combining the results from each scenario.
+## Here, the files will be identical because we only have one scenario.
+get_results_all(user='D0-F1-cod')
+## <look at csv files>
+results_sc_1 <- read.csv('ss3sim_scalar.csv') # Scalar quantities, e.g., M
+results_ts_1 <- read.csv('ss3sim_ts.csv')     # Time-series quantities, e.g., F
+
+## If ss3sim is not working on your computer or you want to look at the
+## results without running the models, open the stored csv files in
+## the 'results' folder.
+## results_sc_1 <- read.csv(file.path('results', 'results_sc_1.csv'))
+## results_ts_1 <- read.csv(file.path('results', 'results_ts_1.csv'))
 
 ## Add columns of relative error
 results_sc_1 <- calculate_re(results_sc_1, add=TRUE)
 results_ts_1 <- calculate_re(results_ts_1, add=TRUE)
+## <see the additional columns>
+head(results_ts_1)
 
-## ss3sim has a set of functions for plotting scalar and ts output:
+## ss3sim has a set of functions for plotting scalar and time-series output:
+## e.g., "plot_ts_lines", which will plot lines for each iteration of any
+## column you wish in "results_ts_1" over time.
+args(plot_ts_lines)
 ?plot_ts_lines
 plot_ts_lines(results_ts_1, y='SpawnBio_om', vert='D')
 plot_ts_lines(results_ts_1, y='SpawnBio_re', vert='D', re=TRUE)
-## We can also look at scalar values instead of time series (year on x-axis)
+## We can also look at scalar values, which will plot points for each iteration
 plot_scalar_points(results_sc_1, x='D', y='depletion_re', re=TRUE)
 plot_scalar_boxplot(results_sc_1, x='D', y='SSB_MSY_re', re=TRUE)
+
+## If you had multiple scenarios, you could look at the results by scenario
+plot_scalar_boxplot(results_sc_1, x='D', y='SSB_MSY_re', re=TRUE,
+  horiz = "scenario")          # Boxplot for each scenario stacked vertically
+plot_scalar_boxplot(results_sc_1, x='D', y='SSB_MSY_re', re=TRUE,
+  horiz = "species")          # life histories stacked vertically
+
+## Print a list of scalar values, for which relative error was calculated.
 names(results_sc_1)[grep('_re', x=names(results_sc_1))]
 ### End of [Step 1]
 ### ------------------------------------------------------------
