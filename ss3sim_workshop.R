@@ -1,29 +1,26 @@
 ### This file demonstrates the capabilities and workflow for the ss3sim
-### stock assessment simulation framework. There is an accompanying set of
-### files necessary to run. Contact the authors for any questions or
+### stock assessment simulation framework.
+### Contact the authors for any questions or
 ### issues. For more on the package see:
 ###
 ### Anderson, S.C., C.C. Monnahan, K.F. Johnson, K. Ono, and
 ### J.L. Valero. 2014. ss3sim: An R Package for Fisheries Stock Assessment
-### Simulation with Stock Synthesis. PlOS ONE 9:e92725.
-### https://doi.org/10.1371/journal.pone.0092725
-###
-### File developed for the CAPAM workshop on data weighting, likelihoods,
-### and process error. Cole Monnahan | monnahc@uw.edu.
+### Simulation with Stock Synthesis. Plos One 9:e92725.
 ### ------------------------------------------------------------
 
 ### ------------------------------------------------------------
-### [Step 0] Startup the working environment
+### [Step 0]
+### Startup the working environment
 
 ## Set your working directory to be in the same folder as this script
 getwd()
 setwd(dir= )
 
-## Load the neccessary libraries
-library(ss3sim)
+## Load the necessary libraries
 library(r4ss)
-library(doParallel)
+library(ss3sim)
 library(foreach)
+library(doParallel, quietly = TRUE, verbose = FALSE)
 library(ggplot2)
 
 ## Setup parallel cores and iterations to run
@@ -32,8 +29,10 @@ cores <- 2                              # cores for parallel
 registerDoParallel(cores)
 
 ## Some checks before proceeding
+<<<<<<< HEAD
 packageVersion("ss3sim")                # should be 0.9.5.9000 (GitHub) or 0.9.6 (CRAN)
-packageVersion("r4ss")                  # should be 1.27.0
+if(as.numeric(substr(packageVersion("r4ss"), 1, 4)) < 1.27) stop("r4ss should",
+  " be version 1.27.0 or greater")
 Sys.info()[5]                           # machine needs to be 64bit
 ## Check that a new enough R version is being used. R>= 3.3
 if(version$major != "3" | as.numeric(version$minor) < 3)
@@ -99,7 +98,7 @@ names(results_sc_1)[grep('_re', x=names(results_sc_1))]
 
 ### ------------------------------------------------------------
 ### [Step 2]. In our second example we will add a new data case manually,
-### run it, and compare peformance with the previous example.
+### run it, and compare performance with the previous example.
 ##
 ## The data case is referenced with letter D. Associated with this case are
 ## three files:
@@ -190,7 +189,7 @@ E.df <- data.frame(
 E.df
 ## <look at E0, E1 and E2>
 
-## 'change_tv' addes time-varying (tv) changes to OM parameters using
+## 'change_tv' adds time-varying (tv) changes to OM parameters using
 ## environmental deviations. This function is very useful for adding
 ## process error in the OM.
 ?change_tv
@@ -243,53 +242,6 @@ g <- ggplot(results_sc_3, aes(ess.ratio, depletion_re, group=replicate))+
 g
 ggsave('plots/depletion_re.png', g, width=9, height=6)
 ### [End of step 3]
-### ------------------------------------------------------------
-
-### ------------------------------------------------------------
-### [Some extra code for running step 3 above, DO NOT RUN]
-###
-## ## Read in results and process for plotting
-## ## Look at trend in process error in selex
-## S1.devs <- as.numeric(unlist(get_caseargs(case_folder, 'D1-E0-F1-S1-cod', case_files=case_files)$tv_params))
-## S2.devs <- as.numeric(unlist(get_caseargs(case_folder, 'D1-E0-F1-S2-cod', case_files=case_files)$tv_params))
-## devs.df <- data.frame(cbind(years=1:100, S1=S1.devs, S2=S2.devs))
-## devs.df.long <- reshape2::melt(devs.df, 'years', variable.name='S')
-## devs.df.long <- merge(devs.df.long, S.df, by='S')
-## g <- ggplot(devs.df.long, aes(years, value+50.8, group=selex.scalar, color=selex.scalar))+
-##     geom_line() + ylab('Sel_P1') + theme_bw()
-## ggsave('plots/selex_patterns.png', g, width=6, height=3)
-## ##
-## ## Look at differences in OM biomass trajectories for an arbitrary iteration
-## yy1 <- ddply(subset(results_ts_3, E=='E0' & D=='D1'), .(year, replicate), mutate,
-##              SSB_re=(SpawnBio_om-SpawnBio_om[which(S=='S1')])/
-##                  SpawnBio_om[which(S=='S1')])
-## ggplot(subset(yy1,  replicate==1), aes(year, SpawnBio_om, group=selex.scalar, color=selex.scalar))+
-##     geom_line() + ylim(0,5e9) + theme_bw()
-## ## read in and process the results
-## get_results_all(user=scenarios, parallel=TRUE)
-## results_ts_3 <- read.csv("ss3sim_ts.csv"); results_ts_3 <- merge(results_ts_3, D.df, by="D")
-## results_ts_3 <- merge(results_ts_3, S.df, by="S"); results_ts_3 <- merge(results_ts_3, E.df, by="E")
-## ## create meta dataframe to merge into results
-## results_sc_3 <- calculate_re(read.csv("ss3sim_scalar.csv"))
-## results_sc_3 <- merge(results_sc_3, results_ts_3[results_ts_3$year==100, c('ID', 'year', 'SpawnBio_om',
-##                    'SpawnBio_em')], by='ID')
-## results_sc_3 <- within(results_sc_3, {
-##              depletion_om = SpawnBio_om/SSB_Unfished_om
-##              depletion_em = SpawnBio_em/SSB_Unfished_em
-##          depletion_re=(depletion_om-depletion_em)/depletion_om})
-## results_sc_3 <- merge(results_sc_3, D.df, by="D"); results_sc_3 <- merge(results_sc_3, S.df, by="S")
-## results_sc_3 <- merge(results_sc_3, E.df, by="E")
-## write.csv(results_sc_3, file='results/results_sc_3.csv')
-## write.csv(results_ts_3, file='results/results_ts_3.csv')
-## saveRDS(results_sc_3, file='results/results_sc_3.RData')
-## saveRDS(results_ts_3, file='results/results_ts_3.RData')
-## temp <- results_sc_3
-## temp$depletion_re[results_sc_3$ess.ratio !=1] <- NA
-## levels(temp$selex.scalar) <- c("No Process Error", "Process Error")
-## g <- plot_scalar_points(temp, x='ess.ratio', y='depletion_re', rel=TRUE, vert='selex.scalar', horiz='estimated', print=FALSE)
-## g <- g + geom_vline(xintercept=1, col='blue', alpha=.5, lwd=.5) + theme_bw()
-## ggsave('plots/depletion_re_empty.png', g, width=6, height=4)
-## rm(temp)
 ### ------------------------------------------------------------
 
 ### End of File
