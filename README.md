@@ -2,8 +2,9 @@
 
 ## Dates
 ### Upcoming workshops
-  * CAPAM workshop: 19-23 October 2015 at the Southwest Fisheries Science Center, La Jolla, CA
+  
 ### Past workshops
+  * CAPAM workshop: 19-23 October 2015 at the Southwest Fisheries Science Center, La Jolla, CA
   * ```ss3sim``` workshop: 6 July 2017 at the Alaska Fisheries Science Center, Seattle, WA
   
 ## Goal
