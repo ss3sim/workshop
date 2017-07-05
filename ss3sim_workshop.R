@@ -6,6 +6,7 @@
 ### Anderson, S.C., C.C. Monnahan, K.F. Johnson, K. Ono, and
 ### J.L. Valero. 2014. ss3sim: An R Package for Fisheries Stock Assessment
 ### Simulation with Stock Synthesis. Plos One 9:e92725.
+### https://doi.org/10.1371/journal.pone.0092725
 ### ------------------------------------------------------------
 
 ### ------------------------------------------------------------
