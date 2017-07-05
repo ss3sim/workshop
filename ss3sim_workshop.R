@@ -29,7 +29,6 @@ cores <- 2                              # cores for parallel
 registerDoParallel(cores)
 
 ## Some checks before proceeding
-<<<<<<< HEAD
 packageVersion("ss3sim")                # should be 0.9.5.9000 (GitHub) or 0.9.6 (CRAN)
 if(as.numeric(substr(packageVersion("r4ss"), 1, 4)) < 1.27) stop("r4ss should",
   " be version 1.27.0 or greater")
@@ -248,13 +247,14 @@ plot_ts_lines(subset(results_ts_2, replicate==1), y='SpawnBio_om', vert='D')
 ### ------------------------------------------------------------
 
 ### ------------------------------------------------------------
-### [Step 3]. In our last example we will explore the interaction of process
-### error and data weighting.
+### [Step 3].
+### Explore the interaction of process error and data weighting.
 
 ## In addition to the sampling functions, there are a variety of other
 ## functions that manipulate the models during runtime. For instance
 ## 'change_e' is used to change starting parameters and phases for
 ## parameters in the EM.
+args(change_e)
 ?change_e
 ## We will use it to turn on and off estimation of M and steepness. Growth
 ## parameters will also be turned off (and fixed at their true values).
@@ -264,11 +264,12 @@ E.df <- data.frame(
     estimated=factor(c("M & h fixed", "h estimated", "M estimated"),
     levels=c("M & h fixed", "h estimated", "M estimated")))
 E.df
-## <look at E0, E1 and E2>
+## <look at E0, E1 and E2 in extra_cases>
 
 ## 'change_tv' adds time-varying (tv) changes to OM parameters using
 ## environmental deviations. This function is very useful for adding
 ## process error in the OM.
+args(change_tv)
 ?change_tv
 ## We will use it to add a trend to a selex parameter
 selex.scalar.vec <- c(0,20)
@@ -290,7 +291,7 @@ D.df
 ## The case files are in the 'extra_cases' folder and ready to go. Notice
 ## that we've added new letters 'S' and 'E' to our case files. The package will now
 ## look for files named "S" to match up to our S cases (S0 and S1).
-case_folder <- 'cases/extra_cases'
+case_folder <- file.path('cases', 'extra_cases')
 case_files <- list(F="F", D=c("index","lcomp","agecomp"), S='S', E='E')
 scenarios <- expand_scenarios(cases=list(D=D.cases, F=1, S=S.cases, E=E.cases),
                      species='cod')
@@ -301,8 +302,8 @@ scenarios
 
 ## This simulation takes too long to run ,but here are the results,
 ## processed a bit
-results_sc_3 <- readRDS('results/results_sc_3.Rdata')
-results_ts_3 <- readRDS('results/results_ts_3.Rdata')
+results_sc_3 <- readRDS(file.path('results', 'results_sc_3.Rdata'))
+results_ts_3 <- readRDS(file.path('results', 'results_ts_3.Rdata'))
 
 ## Look at some performance measures
 myylim <- ylim(-1,1)
@@ -311,14 +312,14 @@ g <- ggplot(results_sc_3, aes(ess.ratio, SSB_MSY_re, group=replicate))+
     geom_vline(xintercept=1, col='blue') +
     geom_hline(yintercept=0, col='red') + myylim+ theme_bw()
 g
-ggsave('plots/SSB_MSY_re.png', g, width=9, height=6)
+ggsave(file.path('plots', 'SSB_MSY_re.png'), g, width=9, height=6)
 g <- ggplot(results_sc_3, aes(ess.ratio, depletion_re, group=replicate))+
     geom_line(alpha=.5) + facet_grid(estimated~selex.scalar) +
     geom_vline(xintercept=1, col='blue') +
     geom_hline(yintercept=0, col='red') + myylim+ theme_bw()
 g
-ggsave('plots/depletion_re.png', g, width=9, height=6)
-### [End of step 3]
+ggsave(file.path('plots', 'depletion_re.png'), g, width=9, height=6)
+### [End of Step 3]
 ### ------------------------------------------------------------
 
 ### End of File
